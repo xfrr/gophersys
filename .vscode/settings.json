@@ -1,0 +1,20 @@
+{
+  "protoc": {
+    "compile_on_save": true,
+    "options": [
+      "--proto_path=${workspaceRoot}/api/proto",
+      "--proto_path=${workspaceRoot}/api/proto/third_party",
+      "--go_out=${workspaceRoot}/grpc/proto-gen-go",
+      "--go-grpc_out=${workspaceRoot}/grpc/proto-gen-go",
+      "--go_opt=paths=source_relative",
+      "--go-grpc_opt=paths=source_relative",
+      "--grpc-gateway_out=${workspaceRoot}/grpc/proto-gen-go",
+      "--grpc-gateway_opt=paths=source_relative",
+      "--openapiv2_out=${workspaceRoot}/api/http",
+      "--openapiv2_opt=logtostderr=true",
+      "--openapiv2_opt=allow_repeated_fields_in_body=true",
+      "--openapiv2_opt=grpc_api_configuration=${workspaceRoot}/api/proto/gw_mapping.yaml"
+    ]
+  }
+}
+
