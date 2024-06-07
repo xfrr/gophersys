@@ -1,0 +1,99 @@
+syntax = "proto3";
+package gopher.v1;
+option go_package = "api/v1/gopher";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Gophers Manager API",
+    version: "v1",
+    description: "A simple gRPC and RESTful API to manage Gophers.",
+    license: {
+      name: "This project is licensed under the MIT License",
+      url: "https://opensource.org/licenses/MIT",
+    },
+    contact: {
+      name: "Francisco Romero - Software Engineer",
+      url: "https://fromero.me",
+      email: "work@fromero.me",
+    },
+  },
+  
+  host: "localhost"
+  base_path: "/v1"
+  schemes: HTTP
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+};
+
+// GophersManager allows managing Gophers.
+service GophersManager {
+  // Create a new Gopher.
+  rpc Create(CreateGopherRequest) returns (CreateGopherResponse) {}
+  // Retrieve a Gopher by ID if it exists.
+  rpc Get(GetGopherRequest) returns (GetGopherResponse) {}
+  // Retrieve all Gophers matching the given query.
+  rpc List(ListGophersRequest) returns (ListGophersResponse) {}
+  // Update an existing Gopher by ID.
+  rpc Update(UpdateGopherRequest) returns (UpdateGopherResponse) {}
+  // Delete a Gopher by ID.
+  rpc Delete(DeleteGopherRequest) returns (DeleteGopherResponse) {}
+}
+
+message CreateGopherRequest {
+  string id = 1;
+  string name = 2;
+  string username = 3;
+  string status = 4;
+  map<string, string> metadata = 5;
+}
+
+message CreateGopherResponse {
+  string gopher_id = 1;
+}
+
+message GetGopherRequest {
+  string gopher_id = 1;
+}
+
+message GetGopherResponse {
+  string name = 1;
+  string email = 2;
+}
+
+message ListGophersRequest {
+  string query = 1;
+}
+
+message ListGophersResponse {
+  repeated Gopher gophers = 1;
+}
+
+message UpdateGopherRequest {
+  string gopher_id = 1;
+  string name = 2;
+}
+
+message UpdateGopherResponse {
+  bool success = 1;
+}
+
+message DeleteGopherRequest {
+  string gopher_id = 1;
+}
+
+message DeleteGopherResponse {
+  bool success = 1;
+}
+
+message Gopher {
+  string id = 1;
+  string name = 2;
+  string username = 3;
+  string status = 4;
+  map<string, string> metadata = 5;
+}
+
+

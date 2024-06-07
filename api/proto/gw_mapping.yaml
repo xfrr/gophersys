@@ -1,0 +1,17 @@
+type: google.api.Service
+config_version: 3
+
+# Please refer google.api.Http in https://github.com/googleapis/googleapis/blob/master/google/api/http.proto file for details.
+http:
+  rules:
+    - selector: gopher.v1.GopherManager.Create
+      post: /gophers
+      description: Create a gopher
+    - selector: gopher.v1.GophersManager.Get
+      get: /gophers/{gopher_id}
+    - selector: gopher.v1.GophersManager.List
+      get: /gophers
+    - selector: gopher.v1.GophersManager.Update
+      put: /gophers/{gopher_id}
+    - selector: gopher.v1.GophersManager.Delete
+      delete: /gophers/{gopher_id}
