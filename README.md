@@ -20,6 +20,7 @@
     <br>
 </p>
 
+
 ## 📝 Table of Contents
 
 - [📝 Table of Contents](#-table-of-contents)
@@ -38,23 +39,28 @@
   - [Deploy using Kubernetes and Helm](#deploy-using-kubernetes-and-helm)
 - [📝 License ](#-license-)
 
+
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
 
 ### Prerequisites
 
 - [Go >= 1.22](https://golang.org/dl/) - *Programming Language*
 - [MongoDB >= 8.0](https://docs.mongodb.com/manual/installation/) - *Database for persistence*
 
+
 #### Development Tools
 - [Go Air](https://github.com/air-verse/air) - *Live Reloading*
 - [Protoc >= 3.0](https://google.github.io/proto-lens/installing-protoc.html) - *Protocol Buffers Compiler*
+
 
 #### Deployment Tools
 - [Docker 24.0 or higher](https://www.docker.com/) - *Containerization*
 - [Kubernetes 1.27 or higher](https://kubernetes.io/) - *Container Orchestration*
 - [Helm 3.0 or higher](https://helm.sh/) - *Kubernetes Package Manager*
+
 
 ### Installing
 
@@ -71,7 +77,9 @@ These instructions will get you a copy of the project up and running on your loc
     ```
     > This will install all the dependencies required for development.
 
+
 ## 🎈 Usage <a name="usage"></a>
+
 
 ### Running the application locally
 
@@ -85,6 +93,7 @@ These instructions will get you a copy of the project up and running on your loc
     make run-air
     ```
 
+
 ### Running the application using Docker
 
 Start the application using the following command:
@@ -92,14 +101,17 @@ Start the application using the following command:
   make run-docker
 ```
 
+
 ### Accessing the application
 Navigate to [http://localhost:8080](http://localhost:8080) in your browser
+
 
 ### Cleaning the application
 To clean up all development resources, run the following command:
 ```bash
 make purge
 ```
+
 
 ## 🚀 Deployment <a name="deployment"></a>
 
@@ -126,6 +138,7 @@ make purge
     ```bash
     make uninstall-helm
     ```
+
 
 ## 📝 License <a name="license"></a>
 
