@@ -31,7 +31,7 @@ jobs:
         uses: codacy/codacy-analysis-cli-action@v4
         with:
           tool: aligncheck
-          project-token: ${{ secrets.CODACY_API_KEY }}
+          project-token: ${{ secrets.CODACY_API_TOKEN }}
           upload: true
           verbose: true
           max-allowed-issues: 2147483647
@@ -39,7 +39,7 @@ jobs:
         uses: codacy/codacy-analysis-cli-action@v4
         with:
           run-staticcheck: true
-          project-token: ${{ secrets.CODACY_API_KEY }}
+          project-token: ${{ secrets.CODACY_API_TOKEN }}
           upload: true
           verbose: true
           max-allowed-issues: 2147483647
