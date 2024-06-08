@@ -3,6 +3,8 @@ package gopher.v1;
 option go_package = "api/v1/gopher";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
@@ -46,8 +48,8 @@ message CreateGopherRequest {
   string id = 1;
   string name = 2;
   string username = 3;
-  string status = 4;
-  map<string, string> metadata = 5;
+  Status status = 4;
+  google.protobuf.Struct metadata = 5;
 }
 
 message CreateGopherResponse {
@@ -59,12 +61,10 @@ message GetGopherRequest {
 }
 
 message GetGopherResponse {
-  string name = 1;
-  string email = 2;
+  Gopher gopher = 1;
 }
 
 message ListGophersRequest {
-  string query = 1;
 }
 
 message ListGophersResponse {
@@ -73,11 +73,13 @@ message ListGophersResponse {
 
 message UpdateGopherRequest {
   string gopher_id = 1;
-  string name = 2;
+  string gopher_name = 2;
+  string gopher_username = 3;
+  Status gopher_status = 4;
+  google.protobuf.Struct gopher_metadata = 5;
 }
 
 message UpdateGopherResponse {
-  bool success = 1;
 }
 
 message DeleteGopherRequest {
@@ -85,15 +87,22 @@ message DeleteGopherRequest {
 }
 
 message DeleteGopherResponse {
-  bool success = 1;
 }
 
 message Gopher {
   string id = 1;
   string name = 2;
   string username = 3;
-  string status = 4;
-  map<string, string> metadata = 5;
+  Status status = 4;
+  google.protobuf.Struct metadata = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
-
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  ACTIVE = 1;
+  INACTIVE = 2;
+  SUSPENDED = 3;
+  DELETED = 4;
+}
