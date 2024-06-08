@@ -55,7 +55,7 @@
         ]
       }
     },
-    "/gophers/{gopherId}": {
+    "/gophers/{id}": {
       "get": {
         "summary": "Retrieve a Gopher by ID if it exists.",
         "operationId": "GophersManager_Get",
@@ -75,7 +75,7 @@
         },
         "parameters": [
           {
-            "name": "gopherId",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -104,7 +104,7 @@
         },
         "parameters": [
           {
-            "name": "gopherId",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -133,25 +133,25 @@
         },
         "parameters": [
           {
-            "name": "gopherId",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "gopherName",
+            "name": "name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "gopherUsername",
+            "name": "username",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "gopherStatus",
+            "name": "status",
             "in": "query",
             "required": false,
             "type": "string",
@@ -165,7 +165,7 @@
             "default": "STATUS_UNSPECIFIED"
           },
           {
-            "name": "gopherMetadata",
+            "name": "metadata",
             "in": "query",
             "required": false,
             "type": "object"
@@ -228,7 +228,7 @@
     "v1CreateGopherResponse": {
       "type": "object",
       "properties": {
-        "gopherId": {
+        "id": {
           "type": "string"
         }
       }

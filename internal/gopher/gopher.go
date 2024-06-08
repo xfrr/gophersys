@@ -55,28 +55,60 @@ func (g Aggregate) UpdatedAt() time.Time {
 	return g.updateAt
 }
 
+// Update updates the Gopher properties
+// It changes the name, username, status, and metadata
+// and set the update time to the current time
+// It returns an error if any of the properties is invalid
+func (g *Aggregate) Update(
+	name Name,
+	username Username,
+	status Status,
+	metadata Metadata,
+) error {
+	if err := g.changeName(name); err != nil {
+		return err
+	}
+
+	if err := g.changeUsername(username); err != nil {
+		return err
+	}
+
+	if err := g.changeStatus(status); err != nil {
+		return err
+	}
+
+	g.mergeMetadata(metadata)
+	g.updateAt = time.Now()
+	return nil
+}
+
 // SetName sets the name for the Gopher entity
-func (g *Aggregate) SetName(name string) {
+func (g *Aggregate) changeName(name Name) error {
+	if !g.name.IsValid() {
+		return ErrInvalidName
+	}
+
 	g.name = Name(name)
+	return nil
 }
 
 // SetMetadata sets the metadata for the Gopher entity
-func (g *Aggregate) MergeMetadata(metadata Metadata) {
+func (g *Aggregate) mergeMetadata(metadata Metadata) {
 	g.metadata.merge(metadata)
 }
 
 // ChangeUsername changes the username for the Gopher entity
-func (g *Aggregate) ChangeUsername(username string) error {
+func (g *Aggregate) changeUsername(username Username) error {
 	if !g.username.IsValid() {
 		return ErrInvalidUsername
 	}
 
-	g.username = Username(username)
+	g.username = username
 	return nil
 }
 
 // ChangeStatus changes the status for the Gopher entity
-func (g *Aggregate) ChangeStatus(status Status) error {
+func (g *Aggregate) changeStatus(status Status) error {
 	if !g.status.IsValid() {
 		return ErrInvalidStatus
 	}
@@ -158,7 +190,7 @@ func WithMetadata(metadata Metadata) Modifier {
 // WithStatus sets the status for the Gopher entity
 func WithStatus(statusStr string) Modifier {
 	return func(g *Aggregate) {
-		status := StatusFromString(statusStr)
+		status := ParseStatus(statusStr)
 		if status.IsValid() {
 			g.status = status
 		}

@@ -53,11 +53,11 @@ message CreateGopherRequest {
 }
 
 message CreateGopherResponse {
-  string gopher_id = 1;
+  string id = 1;
 }
 
 message GetGopherRequest {
-  string gopher_id = 1;
+  string id = 1;
 }
 
 message GetGopherResponse {
@@ -72,18 +72,18 @@ message ListGophersResponse {
 }
 
 message UpdateGopherRequest {
-  string gopher_id = 1;
-  string gopher_name = 2;
-  string gopher_username = 3;
-  Status gopher_status = 4;
-  google.protobuf.Struct gopher_metadata = 5;
+  string id = 1;
+  string name = 2;
+  string username = 3;
+  Status status = 4;
+  google.protobuf.Struct metadata = 5;
 }
 
 message UpdateGopherResponse {
 }
 
 message DeleteGopherRequest {
-  string gopher_id = 1;
+  string id = 1;
 }
 
 message DeleteGopherResponse {

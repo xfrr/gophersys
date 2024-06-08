@@ -21,7 +21,7 @@ func (s Status) IsValid() bool {
 	return s > 0 && s < 5
 }
 
-func StatusFromString(s string) Status {
+func ParseStatus(s string) Status {
 	switch s {
 	case "active":
 		return StatusActive

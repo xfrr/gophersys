@@ -30,22 +30,16 @@ func (h UpdateGopherCommandHandler) Handle(ctx context.Context, cmd UpdateGopher
 		return nil, err
 	}
 
-	if cmd.Status != foundGopher.Status().String() {
-		err = foundGopher.ChangeStatus(gopher.StatusFromString(cmd.Status))
-		if err != nil {
-			return nil, err
-		}
+	err = foundGopher.Update(
+		gopher.Name(cmd.Name),
+		gopher.Username(cmd.Username),
+		gopher.ParseStatus(cmd.Status),
+		gopher.ParseMetadata(cmd.Metadata),
+	)
+	if err != nil {
+		return nil, err
 	}
 
-	if cmd.Username != foundGopher.Username().String() {
-		err = foundGopher.ChangeUsername(cmd.Username)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	foundGopher.SetName(cmd.Name)
-	foundGopher.MergeMetadata(gopher.ParseMetadata(cmd.Metadata))
 	return nil, h.gophers.Save(ctx, foundGopher)
 }
 

@@ -8,10 +8,10 @@ http:
       post: /gophers
       description: Create a gopher
     - selector: gopher.v1.GophersManager.Get
-      get: /gophers/{gopher_id}
+      get: /gophers/{id}
     - selector: gopher.v1.GophersManager.List
       get: /gophers
     - selector: gopher.v1.GophersManager.Update
-      put: /gophers/{gopher_id}
+      put: /gophers/{id}
     - selector: gopher.v1.GophersManager.Delete
-      delete: /gophers/{gopher_id}
+      delete: /gophers/{id}

@@ -6,6 +6,9 @@ var (
 	// ErrInvalidID represents an error when the ID is invalid
 	ErrInvalidID = errors.New("invalid id")
 
+	// ErrInvalidName represents an error when the name is invalid
+	ErrInvalidName = errors.New("invalid name")
+
 	// ErrInvalidStatus represents an error when the status is invalid
 	ErrInvalidStatus = errors.New("invalid status")
 
