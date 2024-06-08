@@ -1,0 +1,26 @@
+{{define "header.html"}}
+<header class="navbar">
+  <div class="container-fluid d-flex justify-content-between">
+    <a href="#" class="navbar-brand d-flex align-items-center">
+      <img src="/static/assets/logo.png" alt="Logo" width="32" height="32" />
+      <h1>{{.Title}}</h1>
+    </a>
+    <div class="navbar-icons d-flex align-items-center">
+      <a
+        href="https://github.com/xfrr/gophersys"
+        target="_blank"
+        class="text-decoration-none text-dark"
+      >
+        <i class="bi bi-github text-light"></i>
+      </a>
+      <a
+        href="/settings"
+        target="_blank"
+        class="text-decoration-none text-dark"
+      >
+        <i class="bi bi-gear text-light"></i>
+      </a>
+    </div>
+  </div>
+</header>
+{{end}}

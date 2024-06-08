@@ -1,0 +1,73 @@
+{{ define "userlist.html" }}
+<div class="row gopher-list">
+  {{ range getGophers }}
+  <div class="col-md-12 mb-2 h-auto">
+    <ul class="list-group gopher-item">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        <img
+          src="/static/assets/gopher.png"
+          alt="Gopher"
+          width="48"
+          height="48"
+          class="d-inline-block align-text-top"
+        />
+        <div class="gopher-info">
+          <h5 class="gopher-name text-primary">{{ .Name }}</h5>
+          <p class="gopher-username text-secondary text-muted">
+            <i class="bi bi-person"></i>
+            {{ .Username }}
+          </p>
+        </div>
+        <div
+          role="group"
+          class="gopher-buttons btn-group btn-group-md me-2 border border-1 border-secondary rounded rounded-3"
+        >
+          <button
+            id="edit-button"
+            type="button"
+            class="btn btn-outline-primary"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button id="view-button" type="button" class="btn btn-primary">
+            <i class="bi bi-eye"></i>
+            View
+          </button>
+          <button id="delete-button" type="button" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  {{ end }}
+  <script>
+    const buttons = document.querySelectorAll(".gopher-buttons button");
+    buttons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        switch (button.id) {
+          // TODO: display modal
+          case "view-button":
+            alert("View clicked");
+            break;
+          case "edit-button":
+            // TODO: display modal
+            alert("Edit");
+            break;
+          // TODO: display modal
+          case "delete-button":
+            alert("Delete");
+            // var response = '{{.deleteGophers}}'
+            // console.log(response)
+            break;
+          default:
+            break;
+        }
+      });
+    });
+  </script>
+</div>
+{{ end }}
