@@ -4,8 +4,11 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
 
 	gopherspb "github.com/xfrr/gophersys/grpc/proto-gen-go/gopher/v1"
+	healtcheckpb "google.golang.org/grpc/health/grpc_health_v1"
+	reflectionpb "google.golang.org/grpc/reflection"
 )
 
 var (
@@ -69,5 +72,7 @@ func NewServer(
 		srv:     grpc.NewServer(append(defaultServerOptions, opts...)...),
 	}
 	gopherspb.RegisterGophersManagerServer(srv.srv, srv.svc)
+	healtcheckpb.RegisterHealthServer(srv.srv, health.NewServer())
+	reflectionpb.Register(srv.srv)
 	return srv
 }
