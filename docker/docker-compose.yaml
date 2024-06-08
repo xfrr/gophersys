@@ -5,12 +5,30 @@ services:
     image: mongo:latest
     container_name: mongodb
     ports:
-      - '27017:27017'
+    - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: higopher!
     volumes:
-      - mongo_data:/data/db
+    - mongo_data:/data/db
+
+  gophers-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: gophers-server
+    ports:
+    # web app port
+    - '8080:8080'
+    # grpc server port
+    - '50051:50051'
+    depends_on:
+    - mongodb
+    environment:
+      GOPHERS_GRPC_SERVER_PORT: 50051
+      GOPHERS_DATABASE_HOST: mongodb
+      GOPHERS_DATABASE_USERNAME: root
+      GOPHERS_DATABASE_PASSWORD: higopher!
 
 volumes:
   mongo_data:
