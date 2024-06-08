@@ -9,6 +9,11 @@ PROTO_DIR := $(WORKSPACE_ROOT)/api/proto
 GO_OUT_DIR := $(WORKSPACE_ROOT)/grpc/proto-gen-go
 OPENAPI_OUT_DIR := $(WORKSPACE_ROOT)/api/http
 
+# Docker
+DOCKER_REGISTRY := xfrr
+DOCKER_IMAGE := gophersys
+DOCKER_TAG := latest
+
 # Proto files. Exclude third_party directory
 PROTO_FILES := $(shell find $(PROTO_DIR) -name '*.proto' -not -path "$(PROTO_DIR)/third_party/*")
 
@@ -28,10 +33,10 @@ PROTOC_CMD := protoc \
 	--openapiv2_opt=allow_repeated_fields_in_body=true \
 	--openapiv2_opt=grpc_api_configuration=$(PROTO_DIR)/gw_mapping.yaml
 
-# Default target
+# TARGETS
+# =======
 all: protoc build run
 
-# Help target (optional)
 help:
 	@echo "Usage: make [target]"
 	@echo ""
@@ -43,38 +48,30 @@ help:
 	@echo "  help     Display this help message"
 	@echo ""
 
-# Build target
 build:
 	@go build -o $(WORKSPACE_ROOT)/bin/server $(WORKSPACE_ROOT)/cmd/server
 	@echo "✅ Server binary built successfully"
 
-# Deps target (optional)
 deps:
 	@go mod tidy
 	@echo "✅ Dependencies updated"
 
-# Protoc target
 protoc:
 	@$(PROTOC_CMD) $(PROTO_FILES)
 	@echo "✅ Proto files compiled successfully"
 
-# Purge target (optional)
 purge:
 	rm -rf $(GO_OUT_DIR) $(OPENAPI_OUT_DIR)
 	rm -f $(WORKSPACE_ROOT)/bin
 	@echo "✅ All files deleted successfully"
 
-# Run target (optional)
-# This starts the server with the web app enabled
 run:
 	@go run $(WORKSPACE_ROOT)/cmd/server
 
-# Run target with comstrek/air (optional)
 run-air:
 	@command -v air >/dev/null 2>&1 || go install github.com/air-verse/air@latest
 	@air -c .air.toml
 
-# Setup target (optional only for development purposes)
 setup:
 	@go mod download
 	@go install \
@@ -83,3 +80,16 @@ setup:
     google.golang.org/protobuf/cmd/protoc-gen-go \
     google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	@echo "✅ Setup completed successfully"
+
+# DOCKER TARGETS
+# ==============
+docker-run:
+	@docker-compose -f $(WORKSPACE_ROOT)/docker/docker-compose.yaml up
+
+docker-build:
+	@docker build -t $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG) -f $(WORKSPACE_ROOT)/docker/Dockerfile $(WORKSPACE_ROOT)
+	@echo "✅ Docker image built successfully"
+
+docker-push: docker-build
+	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)
+	@echo "✅ Docker image pushed successfully"
