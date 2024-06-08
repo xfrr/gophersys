@@ -38,3 +38,29 @@ func (m Metadata) merge(metadata Metadata) {
 		m.m[k] = v
 	}
 }
+
+func (m Metadata) Compare(metadata Metadata) int {
+	if m.IsEmpty() && metadata.IsEmpty() {
+		return 0
+	}
+
+	if m.IsEmpty() {
+		return -1
+	}
+
+	if metadata.IsEmpty() {
+		return 1
+	}
+
+	if len(m.m) != len(metadata.m) {
+		return -1
+	}
+
+	for k, v := range m.m {
+		if metadata.Get(k) != v {
+			return -1
+		}
+	}
+
+	return 0
+}

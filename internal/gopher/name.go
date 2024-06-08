@@ -7,5 +7,5 @@ func (n Name) String() string {
 }
 
 func (n Name) IsValid() bool {
-	return n != ""
+	return n.String() != ""
 }
