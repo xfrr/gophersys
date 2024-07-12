@@ -20,23 +20,23 @@ var _ gopherspb.GophersManagerServer = (*Service)(nil)
 type Service struct {
 	gopherspb.UnsafeGophersManagerServer
 
-	// cmdbus is the command dispatcher.
-	cmdbus bus.Bus
+	// commandDispatcher is the command dispatcher.
+	commandDispatcher bus.Dispatcher
 
-	// querybus is the query dispatcher.
-	querybus bus.Bus
+	// queryDispatcher is the query dispatcher.
+	queryDispatcher bus.Dispatcher
 }
 
-func NewService(cmdbus bus.Bus, querybus bus.Bus) Service {
+func NewService(commandDispatcher bus.Dispatcher, queryDispatcher bus.Dispatcher) Service {
 	return Service{
-		cmdbus:   cmdbus,
-		querybus: querybus,
+		commandDispatcher: commandDispatcher,
+		queryDispatcher:   queryDispatcher,
 	}
 }
 
 // CreateGopher implements gopherspb.GophersManagerServer.
 func (s Service) Create(ctx context.Context, req *gopherspb.CreateGopherRequest) (*gopherspb.CreateGopherResponse, error) {
-	_, err := s.cmdbus.Dispatch(context.Background(), gophercmd.CreateGopherCommand{
+	_, err := s.commandDispatcher.Dispatch(ctx, gophercmd.CreateGopherCommand{
 		ID:       req.GetId(),
 		Name:     req.GetName(),
 		Username: req.GetUsername(),
@@ -54,7 +54,7 @@ func (s Service) Create(ctx context.Context, req *gopherspb.CreateGopherRequest)
 }
 
 func (s Service) Delete(ctx context.Context, req *gopherspb.DeleteGopherRequest) (*gopherspb.DeleteGopherResponse, error) {
-	_, err := s.cmdbus.Dispatch(context.Background(), gophercmd.DeleteGopherCommand{
+	_, err := s.commandDispatcher.Dispatch(ctx, gophercmd.DeleteGopherCommand{
 		ID: req.GetId(),
 	})
 	if err != nil {
@@ -64,7 +64,7 @@ func (s Service) Delete(ctx context.Context, req *gopherspb.DeleteGopherRequest)
 }
 
 func (s Service) Get(ctx context.Context, req *gopherspb.GetGopherRequest) (*gopherspb.GetGopherResponse, error) {
-	response, err := s.querybus.Dispatch(context.Background(), gopherqry.GetGopherQuery{
+	response, err := s.queryDispatcher.Dispatch(ctx, gopherqry.GetGopherQuery{
 		GopherID: req.GetId(),
 	})
 	if err != nil {
@@ -94,8 +94,8 @@ func (s Service) Get(ctx context.Context, req *gopherspb.GetGopherRequest) (*gop
 	}, nil
 }
 
-func (s Service) List(context.Context, *gopherspb.ListGophersRequest) (*gopherspb.ListGophersResponse, error) {
-	response, err := s.querybus.Dispatch(context.Background(), gopherqry.GetGophersQuery{})
+func (s Service) List(ctx context.Context, req *gopherspb.ListGophersRequest) (*gopherspb.ListGophersResponse, error) {
+	response, err := s.queryDispatcher.Dispatch(ctx, gopherqry.GetGophersQuery{})
 	if err != nil {
 		return nil, toGrpcError(err)
 	}
@@ -129,7 +129,7 @@ func (s Service) List(context.Context, *gopherspb.ListGophersRequest) (*gophersp
 }
 
 func (s Service) Update(ctx context.Context, req *gopherspb.UpdateGopherRequest) (*gopherspb.UpdateGopherResponse, error) {
-	_, err := s.cmdbus.Dispatch(ctx, gophercmd.UpdateGopherCommand{
+	_, err := s.commandDispatcher.Dispatch(ctx, gophercmd.UpdateGopherCommand{
 		ID:       req.GetId(),
 		Name:     req.GetName(),
 		Username: req.GetUsername(),

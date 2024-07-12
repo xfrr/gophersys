@@ -83,7 +83,7 @@ setup:
 
 # DOCKER TARGETS
 # ==============
-docker-run:
+docker-run: docker-gen-env
 	@docker-compose -f $(WORKSPACE_ROOT)/docker/docker-compose.yaml up
 
 docker-build:
@@ -93,3 +93,6 @@ docker-build:
 docker-push: docker-build
 	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)
 	@echo "✅ Docker image pushed successfully"
+
+docker-gen-env:
+	@envsubst < $(WORKSPACE_ROOT)/docker/.env.template > $(WORKSPACE_ROOT)/docker/.env

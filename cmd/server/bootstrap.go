@@ -22,23 +22,22 @@ import (
 
 var (
 	// grpc server env vars
-	serverPort    = env.GetStr("GOPHERS_GRPC_SERVER_PORT", "50051")
-	serverCert    = env.GetStr("GOPHERS_GRPC_SERVER_CERT", "")
-	serverCertKey = env.GetStr("GOPHERS_GRPC_SERVER_CERT_KEY", "")
-	serverVersion = env.GetStr("GOPHERS_GRPC_SERVER_VERSION", "v1.0.0")
+	grpcServerPort    = env.GetStr("GOPHERS_GRPC_SERVER_PORT", "50051")
+	grpcServerCert    = env.GetStr("GOPHERS_GRPC_SERVER_CERT", "")
+	grpcServerCertKey = env.GetStr("GOPHERS_GRPC_SERVER_CERT_KEY", "")
+	grpcServerVersion = env.GetStr("GOPHERS_GRPC_SERVER_VERSION", "v1.0.0")
 
 	// database env vars
-	databaseHost = env.GetStr("GOPHERS_DATABASE_HOST", "localhost")
-	databasePort = env.GetStr("GOPHERS_DATABASE_PORT", "27017")
-	databaseUser = env.GetStr("GOPHERS_DATABASE_USER", "root")
-	databasePass = env.GetStr("GOPHERS_DATABASE_PASS", "higopher!")
+	databaseURL = env.GetStr("GOPHERS_DATABASE_URL", "mongodb://root:higopher!@localhost:27017?authSource=admin&readPreference=primary&appname=gophersys&ssl=false")
 
 	// mongo env vars
 	mongoConnTimeout = env.GetDuration("GOPHERS_MONGO_CONN_TIMEOUT", "5s")
 
 	// web app
-	webAppEnabled = env.GetBool("GOPHERS_WEB_APP_ENABLED", true)
-	webAppPort    = env.GetStr("GOPHERS_WEB_APP_PORT", "8080")
+	webAppEnabled = env.GetBool("GOPHERS_WEBAPP_ENABLED", true)
+	webAppURI     = env.GetStr("GOPHERS_WEBAPP_PORT", "8080")
+	webAppCert    = env.GetStr("GOPHERS_WEBAPP_CERT", "")
+	webAppCertKey = env.GetStr("GOPHERS_WEBAPP_CERT_KEY", "")
 
 	// logger
 	logLevel = env.GetStr("GOPHERS_LOG_LEVEL", "debug")
@@ -61,7 +60,7 @@ func (c *Container) Start(ctx context.Context) error {
 	repo := gophermgo.NewRepository(client)
 	cmdbus := newCommandBus(repo)
 	querybus := newQueryBus(repo)
-	grpcServer := c.newGRPCServer(serverPort, cmdbus, querybus)
+	grpcServer := c.newGRPCServer(grpcServerPort, cmdbus, querybus)
 
 	err := c.executeMigrations(ctx, repo, c.logger)
 	if err != nil {
@@ -91,15 +90,8 @@ func (c *Container) connectMongoDB(ctx context.Context) (client *mongo.Client) {
 	ctx, cancel := context.WithTimeout(ctx, mongoConnTimeout)
 	defer cancel()
 
-	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s",
-		databaseUser,
-		databasePass,
-		databaseHost,
-		databasePort,
-	)
-
 	if client, err = mongo.Connect(ctx,
-		options.Client().ApplyURI(uri),
+		options.Client().ApplyURI(databaseURL),
 	); err != nil {
 		panic(err)
 	}
@@ -127,8 +119,8 @@ func (c *Container) newGRPCServer(port string, cmdbus bus.Bus, querybus bus.Bus)
 	svc := gophergrpc.NewService(cmdbus, querybus)
 
 	// create credentials if cert files are provided
-	if serverCert != "" && serverCertKey != "" {
-		creds, err := credentials.NewServerTLSFromFile(serverCert, serverCertKey)
+	if grpcServerCert != "" && grpcServerCertKey != "" {
+		creds, err := credentials.NewServerTLSFromFile(grpcServerCert, grpcServerCertKey)
 		if err != nil {
 			panic(err)
 		}
@@ -141,14 +133,14 @@ func (c *Container) newGRPCServer(port string, cmdbus bus.Bus, querybus bus.Bus)
 
 func (c *Container) startGRPCServer(ctx context.Context, grpcServer *gophergrpc.Server, logger logger.Logger) error {
 	logger.Info().
-		Str("port", serverPort).
-		Str("version", serverVersion).
+		Str("port", grpcServerPort).
+		Str("version", grpcServerVersion).
 		Msg("starting gRPC server")
 
 	defer func() {
 		c.logger.Info().
-			Str("port", serverPort).
-			Str("version", serverVersion).
+			Str("port", grpcServerPort).
+			Str("version", grpcServerVersion).
 			Msg("stopping gRPC server gracefully")
 		grpcServer.GracefulStop()
 	}()
@@ -169,7 +161,9 @@ func (c *Container) startGRPCServer(ctx context.Context, grpcServer *gophergrpc.
 func startWebApp(cmdbus bus.Bus, querybus bus.Bus) {
 	logr := newLogger("webApp", logLevel)
 	logr.Info().
-		Str("port", webAppPort).
+		Str("port", webAppURI).
+		Bool("https", webAppCert != "" && webAppCertKey != "").
+		Str("url", fmt.Sprintf("http://localhost:%s", webAppURI)).
 		Msg("starting web app")
 
 	webApp, err := web.NewApp(cmdbus, querybus, logr)
@@ -177,7 +171,7 @@ func startWebApp(cmdbus bus.Bus, querybus bus.Bus) {
 		logr.Fatal().Err(err).Msg("failed to create web app")
 	}
 
-	err = webApp.ListenAndServe(webAppPort)
+	err = webApp.ListenAndServe(webAppURI, webAppCert, webAppCertKey)
 	if err != nil {
 		logr.Fatal().Err(err).Msg("failed to start web app")
 	}

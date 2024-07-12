@@ -26,11 +26,6 @@ func (s ServerAddress) String() string {
 	return string(s)
 }
 
-// MakeServerAddress creates a new ServerAddress from the given address.
-func MakeServerAddress(host, port string) ServerAddress {
-	return ServerAddress(net.JoinHostPort(host, port))
-}
-
 // Server represents a gRPC Server for GophersManager gRPC service.
 type Server struct {
 	// Address is the address of the gRPC Server.
@@ -67,7 +62,7 @@ func NewServer(
 	opts ...grpc.ServerOption,
 ) *Server {
 	srv := &Server{
-		Address: MakeServerAddress("localhost", port),
+		Address: ServerAddress(":" + port),
 		svc:     svc,
 		srv:     grpc.NewServer(append(defaultServerOptions, opts...)...),
 	}
