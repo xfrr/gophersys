@@ -3,7 +3,6 @@ package web
 import (
 	"embed"
 	"html/template"
-	"net/http"
 )
 
 //go:embed templates/* templates/layout/*
@@ -25,12 +24,4 @@ func (a App) loadTemplates(fm template.FuncMap) error {
 	}
 
 	return nil
-}
-
-func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
-	err := templates.
-		ExecuteTemplate(w, tmpl, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 }

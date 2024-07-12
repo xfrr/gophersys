@@ -1,42 +1,47 @@
 {{ define "userlist.html" }}
-<div class="row gopher-list">
+<div class="flex flex-col space-y-4 p-4">
   {{ range getGophers }}
-  <div class="col-md-12 mb-2 h-auto">
-    <ul class="list-group gopher-item">
+  <div class="w-full mb-4">
+    <ul class="bg-white rounded-lg shadow-lg">
       <li
-        class="list-group-item d-flex justify-content-between align-items-center"
+        class="flex flex-col sm:flex-row justify-between items-center p-4 border-b last:border-none space-y-4 sm:space-y-0"
       >
-        <img
-          src="/static/assets/gopher.png"
-          alt="Gopher"
-          width="48"
-          height="48"
-          class="d-inline-block align-text-top"
-        />
-        <div class="gopher-info">
-          <h5 class="gopher-name text-primary">{{ .Name }}</h5>
-          <p class="gopher-username text-secondary text-muted">
+        <img src="/static/assets/gopher.png" alt="Gopher" class="w-12 h-12" />
+        <div class="flex-1 sm:ml-4 text-center sm:text-left">
+          <h5 class="text-blue-500 font-semibold">{{ .Name }}</h5>
+          <p class="text-gray-500">
             <i class="bi bi-person"></i>
             {{ .Username }}
           </p>
         </div>
         <div
+          id="gopher-buttons"
           role="group"
-          class="gopher-buttons btn-group btn-group-md me-2 border border-1 border-secondary rounded rounded-3"
+          class="flex flex-row space-x-2 border border-gray-300 rounded-lg p-1"
         >
           <button
             id="edit-button"
             type="button"
-            class="btn btn-outline-primary"
+            class="bg-green-500 text-white hover:bg-green-600 p-2 rounded text-xl basis-1/3"
+            aria-label="Edit"
           >
-            <i class="bi bi-pencil"></i>
+            <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button id="view-button" type="button" class="btn btn-primary">
-            <i class="bi bi-eye"></i>
-            View
+          <button
+            id="view-button"
+            type="button"
+            class="bg-blue-500 text-white hover:bg-blue-600 p-2 rounded text-xl basis-1/3"
+            aria-label="View"
+          >
+            <i class="fa-solid fa-eye p-1"></i>
           </button>
-          <button id="delete-button" type="button" class="btn btn-danger">
-            <i class="bi bi-trash"></i>
+          <button
+            id="delete-button"
+            type="button"
+            class="bg-red-500 text-white hover:bg-red-600 p-2 rounded text-xl basis-1/3"
+            aria-label="Delete"
+          >
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </li>
@@ -44,26 +49,18 @@
   </div>
   {{ end }}
   <script>
-    const buttons = document.querySelectorAll(".gopher-buttons button");
-    buttons.forEach((button) => {
+    document.querySelectorAll("#gopher-buttons button").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
         switch (button.id) {
-          // TODO: display modal
           case "view-button":
             alert("View clicked");
             break;
           case "edit-button":
-            // TODO: display modal
-            alert("Edit");
+            alert("Edit clicked");
             break;
-          // TODO: display modal
           case "delete-button":
-            alert("Delete");
-            // var response = '{{.deleteGophers}}'
-            // console.log(response)
-            break;
-          default:
+            alert("Delete clicked");
             break;
         }
       });

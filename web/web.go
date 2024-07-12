@@ -38,7 +38,10 @@ func NewApp(cmdbus bus.Bus, queryBus bus.Bus, logger logger.Logger) (*App, error
 	}
 
 	fm := template.FuncMap{
-		"getGophers": app.getGophers,
+		"getGophers":    app.getGophers,
+		"deleteGophers": app.deleteGophers,
+		"createGopher":  app.createGopher,
+		"updateGopher":  app.updateGopher,
 	}
 
 	if err := app.loadTemplates(fm); err != nil {
@@ -55,14 +58,19 @@ type App struct {
 	logger   logger.Logger
 }
 
-func (a App) ListenAndServe(port string) error {
-	return http.ListenAndServe("localhost:"+port, a.newRouter())
+func (a App) ListenAndServe(port string, certFile, keyFile string) error {
+	if certFile != "" && keyFile != "" {
+		return http.ListenAndServeTLS(":"+port, certFile, keyFile, a.newRouter())
+	}
+
+	return http.ListenAndServe(":"+port, a.newRouter())
 }
 
 func (a App) newRouter() *chi.Mux {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Heartbeat("/health"))
 
 	// serve index page
 	r.Get("/", indexHandler())

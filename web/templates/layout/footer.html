@@ -1,8 +1,30 @@
 {{define "footer.html"}}
-<footer class="footer mt-auto pt-2">
-  <span class="text-muted"
-    >© 2024 <a href="https://fromero.me" class="text-decoration-none">xfrr</a>.
-    All rights reserved.</span
+<footer class="bg-gray-800 text-center py-4 fixed bottom-0 w-full">
+  <div
+    class="container mx-auto px-8 flex flex-col sm:flex-row items-center justify-between space-y-2 md:space-y-0"
   >
+    <div class="flex space-x-4">
+      <a
+        href="https://github.com/xfrr"
+        target="_blank"
+        class="text-gray-400 hover:text-white"
+      >
+        <i class="fab fa-github fa-2x"></i>
+      </a>
+      <a
+        href="https://linkedin.com/in/xfrr"
+        target="_blank"
+        class="text-gray-400 hover:text-white"
+      >
+        <i class="fab fa-linkedin fa-2x"></i>
+      </a>
+    </div>
+    <span class="text-gray-400 text-sm">
+      © 2024
+      <a href="https://fromero.me" class="text-blue-500 hover:underline"
+        >Francisco Romero</a
+      >. All rights reserved.
+    </span>
+  </div>
 </footer>
 {{end}}
